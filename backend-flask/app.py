@@ -1,6 +1,5 @@
 from flask import Flask
 from flask import request
-from flask_cors import CORS, cross_origin
 import os
 
 from services.home_activities import *
@@ -16,14 +15,8 @@ from services.show_activity import *
 app = Flask(__name__)
 frontend = os.getenv('FRONTEND_URL')
 backend = os.getenv('BACKEND_URL')
+print(frontend)
 origins = [frontend, backend]
-cors = CORS(
-  app, 
-  resources={r"/api/*": {"origins": origins}},
-  expose_headers="location,link",
-  allow_headers="content-type,if-modified-since",
-  methods="OPTIONS,GET,HEAD,POST"
-)
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
@@ -47,7 +40,6 @@ def data_messages(handle):
   return
 
 @app.route("/api/messages", methods=['POST','OPTIONS'])
-@cross_origin()
 def data_create_message():
   user_sender_handle = 'andrewbrown'
   user_receiver_handle = request.json['user_receiver_handle']
@@ -84,7 +76,6 @@ def data_search():
   return
 
 @app.route("/api/activities", methods=['POST','OPTIONS'])
-@cross_origin()
 def data_activities():
   user_handle  = 'andrewbrown'
   message = request.json['message']
@@ -102,7 +93,6 @@ def data_show_activity(activity_uuid):
   return data, 200
 
 @app.route("/api/activities/<string:activity_uuid>/reply", methods=['POST','OPTIONS'])
-@cross_origin()
 def data_activities_reply(activity_uuid):
   user_handle  = 'andrewbrown'
   message = request.json['message']
